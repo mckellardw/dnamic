@@ -50,7 +50,7 @@ def generate_data_layout(data_layout_file = 'data_layout.csv'):
     # Standardize-amplicon-start    TRUE/left blank
     
     data_layout_dict = dict()
-    with open(data_layout_file,'rU') as csvfile:
+    with open(data_layout_file,'r') as csvfile:
         curr_sample = None
         for myline in csvfile:
             thisline = rm_hidden_char(myline).strip('\n').split(',')

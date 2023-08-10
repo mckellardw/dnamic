@@ -5,7 +5,7 @@ from Bio import SeqIO
 
 def read_settingsfile_to_dictionary(mysettingsfile):
     mydictionary = dict()
-    with open(sysOps.globaldatapath +mysettingsfile,'rU') as settingsfile:
+    with open(sysOps.globaldatapath +mysettingsfile,'r') as settingsfile:
         for myline in settingsfile:
             myline = str(myline).strip('\n').split(" ")
             if(len(myline)>1):
@@ -25,7 +25,7 @@ def load_cluster_file_to_dictionary(uxi_cluster_file):
     #takes in file with line-items 
     #-cluster-index_-sequence_read-number
     #outputs dictionary with entries {-sequence: [-cluster-index, read-number]}
-    uxi_handle = open(sysOps.globaldatapath +uxi_cluster_file,'rU')
+    uxi_handle = open(sysOps.globaldatapath +uxi_cluster_file,'r')
     clust_dict = dict()
     for uxi_line in uxi_handle:
         split_line = uxi_line.strip("\n").split("_")
@@ -43,7 +43,7 @@ def load_uxi_dict(uxi_list_file):
     #...
     #Outputs dictionary of form {1: [Read 1 ID, Read 2 ID], 2: [Read 3 ID]}
     uxi_dict = dict()
-    uxi_list_handle = open(sysOps.globaldatapath +uxi_list_file,'rU')
+    uxi_list_handle = open(sysOps.globaldatapath +uxi_list_file,'r')
     my_uxi = ""
     for uxi_line in uxi_list_handle:
         split_line = uxi_line.strip('\n').split("_")
@@ -59,7 +59,7 @@ def load_uxi_dict(uxi_list_file):
 def group_uxi_reads(uxi_clust_file, uxi_list_file):
     #takes in clustered -file and identically-matched  file, generates look-up of reads based on identically-matched file
     uxi_dict = load_uxi_dict(uxi_list_file)
-    uxi_clust_handle = open(sysOps.globaldatapath +uxi_clust_file,'rU')
+    uxi_clust_handle = open(sysOps.globaldatapath +uxi_clust_file,'r')
     read_id_grouping = []
     uxis_and_readnums = [] #list of -sequences and corresponding read-numbers, indexed as a list of lists with one-to-one correspondence to clusters
     for uxi_clust_line in uxi_clust_handle:
@@ -144,7 +144,7 @@ def gather_raw_read_stats(mypath,raw_uxi_file='_for_uxi0.fasta',amp_match_file =
             accepted+=1
     
     all_amp_matches = [0, 0, 0]
-    with open(sysOps.globaldatapath +mypath + amp_match_file,'rU') as amp_file_handle:
+    with open(sysOps.globaldatapath +mypath + amp_match_file,'r') as amp_file_handle:
         for my_line in amp_file_handle:
             all_amp_matches[int(my_line)] += 1
             
@@ -158,7 +158,7 @@ def gather_lib_stats(mypath,raw_uxi_files=['_for_uxi0.fasta','_for_uxi1.fasta','
     plur_nt_counts = []
     all_identical = []
     for raw_uxi_file in raw_uxi_files:
-        uxi_handle = open(sysOps.globaldatapath +mypath + raw_uxi_file,'rU')
+        uxi_handle = open(sysOps.globaldatapath +mypath + raw_uxi_file,'r')
         my_nt_counts = [0,0,0,0]
         my_num_reads = 0
         for uxi_record in SeqIO.parse(uxi_handle, "fasta"):   
@@ -168,7 +168,7 @@ def gather_lib_stats(mypath,raw_uxi_files=['_for_uxi0.fasta','_for_uxi1.fasta','
                 
         uxi_handle.close()
         my_num_identical = 0
-        identical_uxi_handle = open(sysOps.globaldatapath +mypath + 'identical_' + raw_uxi_file, 'rU')
+        identical_uxi_handle = open(sysOps.globaldatapath +mypath + 'identical_' + raw_uxi_file, 'r')
         for my_line in identical_uxi_handle:
             if my_line.count('_') == 2:
                 my_num_identical += 1
@@ -180,7 +180,7 @@ def gather_lib_stats(mypath,raw_uxi_files=['_for_uxi0.fasta','_for_uxi1.fasta','
         all_identical.append(my_num_identical)
     
     all_amp_matches = [0, 0, 0]
-    with open(sysOps.globaldatapath +mypath + amp_match_file,'rU') as amp_file_handle:
+    with open(sysOps.globaldatapath +mypath + amp_match_file,'r') as amp_file_handle:
         for my_line in amp_file_handle:
             all_amp_matches[int(my_line)] += 1
     

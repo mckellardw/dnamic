@@ -11,7 +11,7 @@ def gather_rarefaction_data(conditions_filename = 'conditions.csv', outfilename 
     
     #use conditions conditions_filename to specify output order
     dirnames = list()
-    with open(sysOps.globaldatapath + conditions_filename, 'rU') as conditions_handle:
+    with open(sysOps.globaldatapath + conditions_filename, 'r') as conditions_handle:
         for myline in conditions_handle:
             thisline = myline.strip('\n').split(',')
             dirnames.append('lib_' + str(thisline[0]) + '_' + str(thisline[1]) + '_' + str(thisline[2]))
@@ -23,7 +23,7 @@ def gather_rarefaction_data(conditions_filename = 'conditions.csv', outfilename 
     for dir in dirnames:
         print('Gathering rarefaction data for directory ' + sysOps.globaldatapath + dir)
         sum_reads_raw = 0
-        with open(sysOps.globaldatapath +dir + '/' + raw_uxi_files[0],'rU') as uxi_file_handle:
+        with open(sysOps.globaldatapath +dir + '/' + raw_uxi_files[0],'r') as uxi_file_handle:
             #first UMI/UEI file in list to count raw reads
             for uxi_record in SeqIO.parse(uxi_file_handle,'fasta'):
                 sum_reads_raw += 1
@@ -35,12 +35,12 @@ def gather_rarefaction_data(conditions_filename = 'conditions.csv', outfilename 
             try:
                 for my_raw_uxi_file in raw_uxi_files:
                     try:
-                        cluster_file_handle = open(sysOps.globaldatapath +dir + '/thresh1_identical_sub' + str(subsample) + my_raw_uxi_file,'rU')
+                        cluster_file_handle = open(sysOps.globaldatapath +dir + '/thresh1_identical_sub' + str(subsample) + my_raw_uxi_file,'r')
                         consensus_pairing_csv_file = dir + '/consensus_2r_sub' + str(subsample) + 'pairing_filter0.75_uei_umi.csv'
                     except:
                         terminate = True
                         try:
-                            cluster_file_handle = open(sysOps.globaldatapath +dir + '/thresh1_identical_' + my_raw_uxi_file,'rU')
+                            cluster_file_handle = open(sysOps.globaldatapath +dir + '/thresh1_identical_' + my_raw_uxi_file,'r')
                             consensus_pairing_csv_file = dir + '/consensus_2r_pairing_filter0.75_uei_umi.csv'
                         except:
                             sysOps.throw_exception('Directory ' + sysOps.globaldatapath + dir + ' does not contain clustered file' +  sysOps.globaldatapath +dir + '/thresh1_identical_' + my_raw_uxi_file + '. Skipping ...')
@@ -106,7 +106,7 @@ def gather_rarefaction_data(conditions_filename = 'conditions.csv', outfilename 
 def gather_raw_read_stats(conditions_filename = 'conditions.csv', outfilename = 'stats_file.txt'):
     #use conditions conditions_filename to specify output order
     dirnames = list()
-    with open(sysOps.globaldatapath + conditions_filename, 'rU') as conditions_handle:
+    with open(sysOps.globaldatapath + conditions_filename, 'r') as conditions_handle:
         for myline in conditions_handle:
             thisline = myline.strip('\n').split(',')
             dirnames.append('lib_' + str(thisline[0]) + '_' + str(thisline[1]) + '_' + str(thisline[2]))
@@ -124,7 +124,7 @@ def gather_raw_read_stats(conditions_filename = 'conditions.csv', outfilename = 
 def gather_stats(conditions_filename = 'conditions.csv', outfilename = 'stats_file.txt'):
     #use conditions conditions_filename to specify output order
     dirnames = list()
-    with open(sysOps.globaldatapath + conditions_filename, 'rU') as conditions_handle:
+    with open(sysOps.globaldatapath + conditions_filename, 'r') as conditions_handle:
         for myline in conditions_handle:
             thisline = myline.strip('\n').split(',')
             dirnames.append('lib_' + str(thisline[0]) + '_' + str(thisline[1]) + '_' + str(thisline[2]))
@@ -146,7 +146,7 @@ def gather_cluster_stats(conditions_filename = 'conditions.csv', outfilename = '
     
     #use conditions conditions_filename to specify output order
     dirnames = list()
-    with open(sysOps.globaldatapath + conditions_filename, 'rU') as conditions_handle:
+    with open(sysOps.globaldatapath + conditions_filename, 'r') as conditions_handle:
         for myline in conditions_handle:
             thisline = myline.strip('\n').split(',')
             dirnames.append('lib_' + str(thisline[0]) + '_' + str(thisline[1]) + '_' + str(thisline[2]))
@@ -155,7 +155,7 @@ def gather_cluster_stats(conditions_filename = 'conditions.csv', outfilename = '
         print('Gathering cluster stats for directory ' + dir)
         clusters = [[0,0,0],[0,0,0],[0,0,0]]
         rank100 = [list([0]*100) for i in range(tot_amplicons)]
-        with open(sysOps.globaldatapath +dir + '/trg_amplicon_calls.csv','rU') as trg_amp_handle:
+        with open(sysOps.globaldatapath +dir + '/trg_amplicon_calls.csv','r') as trg_amp_handle:
             for my_line in trg_amp_handle:
                 thisline = [int(x) for x in my_line.strip('\n').split(',')]
                 for i in range(100):

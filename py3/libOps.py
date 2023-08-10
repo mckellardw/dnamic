@@ -14,7 +14,13 @@ import random
 This code performs sequence analysis on raw DNA microscopy reaction output 
 '''
 
-def get_subrecord(seq_np_array, my_element = [[],None,None,None], max_frac_mismatch = 0.0, tolerate_ambig_newseq = True, trunc_len = None):
+def get_subrecord(
+        seq_np_array, 
+        my_element = [[],None,None,None], 
+        max_frac_mismatch = 0.0, 
+        tolerate_ambig_newseq = True, 
+        trunc_len = None
+    ):
             
     # seqforms are dicts with elements comprising lists of the following sub-list elements: 
     #    [boundaries, seq_bool_vec, capital_bool_vec (is a capital base), ambig_vec (is an ambiguous base)] -- seq_bool_vec and capital_bool_vec have 4xbase number elements (others only have base number elements)
@@ -825,7 +831,7 @@ class libObj:
         sysOps.throw_status("Completed partitioning fastq, retained " + str(self.num_retained) + " out of " + str(self.num_discarded+self.num_retained) + " correct-length reads and " + str(self.lenrequirement_discarded_reads+self.num_discarded+self.num_retained) + " total reads.")
 
 def subsample(seqform_for_params,seqform_rev_params,output_prefix):
-    # Function for data sub-sampling to perform rarefaction analysis
+    # Function for data subsampling to perform rarefaction analysis
     # Creates directory structure that duplicates those for individual libraries
     
     read_counts = list()
@@ -945,7 +951,12 @@ def subsample(seqform_for_params,seqform_rev_params,output_prefix):
     if amp_match_found:
         amp_match_infile.close()
 
-def check_seqform_match(seq_np,this_seqform_params_P,this_seqform_params_U,max_frac_mismatch):
+def check_seqform_match(
+        seq_np,
+        this_seqform_params_P,
+        this_seqform_params_U,
+        max_frac_mismatch
+    ):
     pass_filter = True
     
     for my_param in this_seqform_params_P:

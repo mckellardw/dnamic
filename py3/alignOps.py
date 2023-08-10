@@ -9,45 +9,113 @@ from Bio import pairwise2
 from Bio import SeqIO
 from Bio import Seq
 
+# Function to count the number of mismatches between two strings
 def count_mismatches(str1, str2):
-    minlen = min(len(str1),len(str2))
+    """
+    Count the number of mismatches between two input strings.
+
+    Args:
+        str1 (str): The first input string.
+        str2 (str): The second input string.
+
+    Returns:
+        tuple: A tuple containing the total number of mismatches and the minimum length of the input strings.
+    """
+    minlen = min(len(str1), len(str2))
     tot_mismatches = 0
+    
+    # Iterate over the characters of the input strings and count mismatches
     for i in range(minlen):
         tot_mismatches += int(str1[i] != str2[i])
+    
     return tot_mismatches, minlen
 
+
 def has_ambiguity(c1,c2):
+    """
+    Check if c2 is a subset of c1's degenerate nucleotide set.
+    
+    Args:
+        c1 (str): The target nucleotide sequence (can be degenerate).
+        c2 (str): The query nucleotide sequence (assumed not to be ambiguous).
+        
+    Returns:
+        bool: True if c2 is a subset of c1's degenerate set, False otherwise.
+    """
     #assumes c2 is not ambiguous nucleotide (if it is, function will return False)
     #returns True if c2 is subset of c1, False otherwise
     c1 = c1.upper()
     c2 = c2.upper()
-    if (c2=='T' and c1 in ['T','N','W','K','Y','B','D','H']) or (c2=='A' and c1 in ['A','N','W','M','R','D','H','V']) or (c2=='C' and c1 in ['C','N','S','M','Y','B','H','V']) or (c2=='G' and c1 in ['G','N','S','K','R','B','D','V']):
+    
+    # Define degenerate nucleotide sets
+    degenerate_sets = {
+        'T': ['T', 'N', 'W', 'K', 'Y', 'B', 'D', 'H'],
+        'A': ['A', 'N', 'W', 'M', 'R', 'D', 'H', 'V'],
+        'C': ['C', 'N', 'S', 'M', 'Y', 'B', 'H', 'V'],
+        'G': ['G', 'N', 'S', 'K', 'R', 'B', 'D', 'V']
+    }
+    
+    # Check if c2 is in the degenerate set of c1
+    if c2 in degenerate_sets.get(c1, []):
         return True
     return False
 
+
 def get_next_uxi_file_entry(handle):
-    
+    """
+    Read and process the next entry from a uxi file.
+
+    Args:
+        handle: The file handle of the uxi file to read from.
+
+    Returns:
+        list: A list containing the header information and a list of identifiers.
+    """
+    # Read the header line from the file
     header = handle.readline()
+
+    # Check if the header is empty
     if len(header) == 0:
-        return [[],[]]
-    
+        return [[], []]
+
+    # Split and process the header line
     header = header.strip('\n').split('_')
+
+    # Check if the header has the correct format
     if len(header) != 3:
         sysOps.throw_exception('Error in get_next_uxi_file_entry(): new line = ' + '_'.join(header))
-    id_list = list()
-    
+
+    # Initialize an empty list to store identifiers
+    id_list = []
+
+    # Read and process the specified number of identifiers
     for i in range(int(header[2])):
         id_list.append(handle.readline().strip('\n'))
-    
+
+    # Return the header information and the list of identifiers
     return [header, id_list]
 
+
 def consolidate_uxi(uxi_file, start_index = 0, prefix = '', include_inv_amp = False):
+    """
+    Generate a file with a list of identical unique uxi's (perfectly matched) along with indices and the number of corresponding reads.
+
+    Args:
+        uxi_file (str): The name of the input uxi file.
+        start_index (int, optional): The starting index for uxi entries. Default is 0.
+        prefix (str, optional): Prefix to be added to the output file name. Default is an empty string.
+        include_inv_amp (bool, optional): Whether to include invalid amplicons. Default is False.
+
+    Returns:
+        list: A list containing the total number of unique entries and the length of the uxi sequence.
+    """
     # Function generates file ("identical_" + uxi_file) with list of identical unique uxi's (perfectly matched) with indices and and the number of corresponding reads
     
     #aux_info_file, if provided, contains line-by-line auxiliary assignments (stagger + amplicon-identity, if either exist)
     uxi_lib = dict()
     #build dictionary directly in memory
     
+    # Read and process uxi sequences from the input file
     with open(sysOps.globaldatapath +uxi_file,'rU') as fasta_handle:
         sysOps.throw_status('Proceeding with consolidation ...')
         for my_record in SeqIO.parse(fasta_handle, "fasta"):
@@ -69,6 +137,7 @@ def consolidate_uxi(uxi_file, start_index = 0, prefix = '', include_inv_amp = Fa
                 else:
                     uxi_lib[my_seq] = [my_record.id]
     
+    # Write the consolidated uxi information to the output file
     uxi_list_handle = open(sysOps.globaldatapath + prefix + "identical_" + uxi_file, 'w')
     uxi_index = int(start_index)
     for my_uxi_key, my_uxi_record_ids in sorted(uxi_lib.items()): #alphabetize by uxi sequence
